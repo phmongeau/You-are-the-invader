@@ -15,7 +15,7 @@ package org.Invader
 			layerShips = new FlxLayer;
 			layerDefender = new FlxLayer;
 			
-			_d = new Defender(300, 150);
+			_d = new Defender(240, 580);
 			layerDefender.add(_d);
 			
 			setShips();

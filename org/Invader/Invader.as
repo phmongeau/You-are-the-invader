@@ -42,7 +42,7 @@ package org.Invader
 						
 			if (FlxG.kB)
 			{
-				FlxG.log('hein!')
+				FlxG.quake(0.02, 0.75);
 			}
 			super.update();
 		}
