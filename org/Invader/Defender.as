@@ -30,7 +30,11 @@ package org.Invader
 					health = 4;
 					deaths += 1;
 				}
-				else kill();
+				else
+				{
+					kill();
+					FlxG.switchState(WinState);
+				}
 			}
 			var move:int = Math.round(Math.random()*10);
 			var shoot:int = Math.round(Math.random()*50);
