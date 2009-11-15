@@ -22,6 +22,7 @@ package org.Invader
 			{
 				if (deaths < 3)
 				{
+					FlxG.score += 3;
 					dead = false;
 					x = 240;
 					y = 580;
@@ -68,13 +69,13 @@ package org.Invader
 			{
 				if (!bullets[i].exists)
 				{
-					bullets[i].reset(x, y, XVelocity, YVelocity);
+					bullets[i].reset(x + 16, y, XVelocity, YVelocity);
 					return;
 				}
 			}
 			
-			var bullet:Bullet = new Bullet(x, y, XVelocity, YVelocity);
-			bullet.reset(x, y, XVelocity, YVelocity);
+			var bullet:Bullet = new Bullet(x + 16, y, XVelocity, YVelocity);
+			bullet.reset(x + 16, y, XVelocity, YVelocity);
 			bullets.add(PlayState.layerBullets.add(bullet));
 			
 		}

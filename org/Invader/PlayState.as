@@ -13,16 +13,22 @@ package org.Invader
 		public var iBullets:FlxArray;
 		public var dBullets:FlxArray;
 		public var attackTimer:Number = 0;
+		public var blocks:FlxArray;
+		private var scoreDisplay:FlxText;
 		
 		public static var layerShips:FlxLayer;
 		public static var layerDefender:FlxLayer;
 		public static var layerBullets:FlxLayer;
+		public static var layerBunker:FlxLayer;
+		public static var layerHud:FlxLayer;
 		
 		public function PlayState():void
 		{
 			layerShips = new FlxLayer;
 			layerDefender = new FlxLayer;
 			layerBullets = new FlxLayer;
+			layerBunker = new FlxLayer;
+			layerHud = new FlxLayer;
 			
 			iBullets = new FlxArray;
 			dBullets = new FlxArray;
@@ -37,13 +43,24 @@ package org.Invader
 			
 			setShips();
 			
+			//blocks = new FlxArray;
+			//blocks.add(layerBunker.add(new Bunker(240, 480)));
 			
+			setBunker();
+			
+			FlxG.score = 10;
+			scoreDisplay = new FlxText(2, 2, 48, 40, FlxG.score.toString(), 0xFFFFFFFF, null, 16, "left");
+			scoreDisplay.setText(FlxG.score.toString());
+			layerHud.add(scoreDisplay);
+			
+			this.add(layerHud);
+			this.add(layerBunker);
 			this.add(layerBullets);
 			this.add(layerDefender);
 			this.add(layerShips);
 			FlxG.setCursor(ImgCursor);
 		}
-		public function setShips():void
+		private function setShips():void
 		{
 			ships = new FlxArray;
 			for (var i:int = 0; i <= 4; ++i)
@@ -72,9 +89,26 @@ package org.Invader
 			}
 		}
 		
+		private function setBunker():void
+		{
+			blocks = new FlxArray;
+			for (var n:uint; n <= 2; ++n)
+			{
+				for (var i:uint = 0; i <= 3; ++i)
+				{
+					blocks.add(layerBunker.add(new Bunker(50 + i*8 + n * 175, 480)));
+					if (i == 1 || i == 2) null
+					else blocks.add(layerBunker.add(new Bunker(50 + i*8 + n * 175, 488)))
+				}				
+			}
+		}
+		
 		override public function update():void
 		{
 			var edge:Boolean = false;
+			
+			scoreDisplay.setText(FlxG.score.toString());
+			
 			for (var i:int = 0; i < ships.length; ++i)
 			{
 				if (ships[i].x <= 0 || ships[i].x >= 448)
@@ -106,11 +140,14 @@ package org.Invader
 			}
 			FlxG.overlapArray(iBullets, _d, killD);
 			FlxG.overlapArrays(dBullets, ships, killI);
+			FlxG.overlapArrays(iBullets, blocks, hitBlock);
+			FlxG.overlapArrays(dBullets, blocks, hitBlock);
 			super.update();
 		}
 		
 		private function shootBullet():void
 		{
+			if (FlxG.score > 0) FlxG.score -= 1;
 			var XVelocity:Number;
 			var YVelocity:Number;
 			var ship:Invader = ships[Math.round(Math.random() * ships.length)];
@@ -137,14 +174,21 @@ package org.Invader
 		{
 			b.kill();
 			if (!d.flickering()) d.hurt(1);
+			FlxG.score += 3;
 		}
 
 		private function killI(b:FlxSprite, i:Invader):void
 		{
 			b.kill();
 			i.kill();
+			if (FlxG.score >= 3) FlxG.score -= 3;
 		}
-
-		
+		private function hitBlock(bullet:FlxSprite, block:Bunker):void
+		{
+			bullet.kill();
+			if (block.state <= 3) block.state += 1;
+			else block.kill();
+			FlxG.score += 1;
+		}
 	}
 }
