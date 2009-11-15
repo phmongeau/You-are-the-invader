@@ -12,7 +12,7 @@ package org.Invader
 		public var _b:Bullet;
 		public var iBullets:FlxArray;
 		public var dBullets:FlxArray;
-		public var attackTimer:int = 0;
+		public var attackTimer:Number = 0;
 		
 		public static var layerShips:FlxLayer;
 		public static var layerDefender:FlxLayer;
@@ -32,7 +32,7 @@ package org.Invader
 				iBullets.add(layerBullets.add(new Bullet(0, 0, 0, 0)));
 			}
 						
-			_d = new Defender(240, 580);
+			_d = new Defender(240, 580, dBullets);
 			layerDefender.add(_d);
 			
 			setShips();
@@ -96,11 +96,16 @@ package org.Invader
 				}
 			}
 			
-			if (FlxG.justPressed(FlxG.MOUSE))
+			attackTimer -= FlxG.elapsed * 6;
+			
+			if (FlxG.justPressed(FlxG.MOUSE) && attackTimer <= 0)
 			{
 				shootBullet();
+				FlxG.log(attackTimer.toString());
+				attackTimer = 2;
 			}
-						
+			FlxG.overlapArray(iBullets, _d, killD);
+			FlxG.overlapArrays(dBullets, ships, killI);
 			super.update();
 		}
 		
@@ -111,7 +116,6 @@ package org.Invader
 			var ship:Invader = ships[Math.round(Math.random() * ships.length)];
 						
 			XVelocity = ((FlxG.mouse.x - ship.x) / (FlxG.mouse.y - ship.y)) * 200;
-			FlxG.log(XVelocity.toString());
 			YVelocity = 200;
 			
 			for (var i:uint = 0; i< iBullets.length; ++i)
@@ -128,6 +132,19 @@ package org.Invader
 			iBullets.add(PlayState.layerBullets.add(bullet));
 			
 		}
+		
+		private function killD(b:FlxSprite, d:Defender):void
+		{
+			b.kill();
+			if (!d.flickering()) d.hurt(1);
+		}
+
+		private function killI(b:FlxSprite, i:Invader):void
+		{
+			b.kill();
+			i.kill();
+		}
+
 		
 	}
 }
