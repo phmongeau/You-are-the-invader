@@ -9,11 +9,10 @@ package org.Invader
 		public var moveSpeed:int = 50;
 		public var dropSpeed:int = 10;
 		public var dropTimer:int = 2;
-		public var attackTimer:int = 0;
 		public var drop:Boolean;
 		public var sorte:Number = 0;
 		
-		public function Invader(X:Number, Y:Number, Type:Number):void
+		public function Invader(X:Number, Y:Number, Type:Number, Bullets:FlxArray):void
 		{
 
 			super(ImgShip1, X, Y, true, false);
@@ -36,15 +35,13 @@ package org.Invader
 					super.update();
 			}
 			else play(sorte.toString());
-
-			if (attackTimer > 0)
-				attackTimer -= FlxG.elapsed * 3;
-						
+									
 			if (FlxG.kB)
 			{
-				FlxG.quake(0.02, 0.75);
+				FlxG.quake(0.005, 0.75);
 			}
 			super.update();
 		}
+		
 	}
 }

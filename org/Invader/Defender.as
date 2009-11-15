@@ -15,25 +15,20 @@ package org.Invader
 		override public function update():void
 		{
 			var move:int = Math.round(Math.random()*10);
-			
-			if (FlxG.kA)
-			{
-				FlxG.log(move.toString())
-			}
-			
+						
 			if (move == 5)
 			{
 				if (!facing) velocity.x = 0;
 				facing = true;
 				velocity.x += moveSpeed * FlxG.elapsed;
-				FlxG.log('right');
+				//FlxG.log('right');
 			}
 			else if (move == 0)
 			{
 				if (facing) velocity.x = 0;
 				facing = false;
 				velocity.x -= moveSpeed * FlxG.elapsed;
-				FlxG.log("left");
+				//FlxG.log("left");
 			}
 			if (x <= 0 || x >= 448) velocity.x *= -1;
 

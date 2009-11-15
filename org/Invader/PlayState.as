@@ -4,52 +4,71 @@ package org.Invader
 	
 	public class PlayState extends FlxState
 	{
+		[Embed(source='../../data/cursor.png')] private var ImgCursor:Class;
+
+		
 		public var ships:FlxArray;
 		public var _d:FlxSprite;
+		public var _b:Bullet;
+		public var iBullets:FlxArray;
+		public var dBullets:FlxArray;
+		public var attackTimer:int = 0;
 		
 		public static var layerShips:FlxLayer;
 		public static var layerDefender:FlxLayer;
+		public static var layerBullets:FlxLayer;
 		
 		public function PlayState():void
 		{
 			layerShips = new FlxLayer;
 			layerDefender = new FlxLayer;
+			layerBullets = new FlxLayer;
 			
+			iBullets = new FlxArray;
+			dBullets = new FlxArray;
+			for (var i:uint = 0; i < 40; ++i)
+			{
+				dBullets.add(layerBullets.add(new Bullet(0, 0, 0, 0)));
+				iBullets.add(layerBullets.add(new Bullet(0, 0, 0, 0)));
+			}
+						
 			_d = new Defender(240, 580);
 			layerDefender.add(_d);
 			
 			setShips();
 			
 			
-			this.add(layerDefender)
-			this.add(layerShips)
+			this.add(layerBullets);
+			this.add(layerDefender);
+			this.add(layerShips);
+			FlxG.setCursor(ImgCursor);
 		}
 		public function setShips():void
 		{
 			ships = new FlxArray;
 			for (var i:int = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 20, 1)))
+				ships.add(layerShips.add(new Invader(50 + i*60, 20, 1, iBullets)))
 			}
 			for (i = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 55, 2)));
+				ships.add(layerShips.add(new Invader(50 + i*60, 55, 2, iBullets)));
 			}			
 			for (i = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 90, 2)));
+				ships.add(layerShips.add(new Invader(50 + i*60, 90, 2, iBullets)));
 			}
 			for (i = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 124, 3)));
+				ships.add(layerShips.add(new Invader(50 + i*60, 124, 3, iBullets)));
 			}
 			for (i = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 160, 3)));
+				ships.add(layerShips.add(new Invader(50 + i*60, 160, 3, iBullets)));
 			}
 			for (i = 0; i <= 4; ++i)
 			{
-				ships.add(layerShips.add(new Invader(50 + i*60, 195, 3)));
+				ships.add(layerShips.add(new Invader(50 + i*60, 195, 3, iBullets)));
 			}
 		}
 		
@@ -76,7 +95,39 @@ package org.Invader
 					ships[n].y += 20;
 				}
 			}
+			
+			if (FlxG.justPressed(FlxG.MOUSE))
+			{
+				shootBullet();
+			}
+						
 			super.update();
 		}
+		
+		private function shootBullet():void
+		{
+			var XVelocity:Number;
+			var YVelocity:Number;
+			var ship:Invader = ships[Math.round(Math.random() * ships.length)];
+						
+			XVelocity = ((FlxG.mouse.x - ship.x) / (FlxG.mouse.y - ship.y)) * 200;
+			FlxG.log(XVelocity.toString());
+			YVelocity = 200;
+			
+			for (var i:uint = 0; i< iBullets.length; ++i)
+			{
+				if (!iBullets[i].exists)
+				{
+					iBullets[i].reset(ship.x, ship.y, XVelocity, YVelocity);
+					return;
+				}
+			}
+			
+			var bullet:Bullet = new Bullet(ship.x, ship.y, XVelocity, YVelocity);
+			bullet.reset(ship.x, ship.y, XVelocity, YVelocity);
+			iBullets.add(PlayState.layerBullets.add(bullet));
+			
+		}
+		
 	}
 }
