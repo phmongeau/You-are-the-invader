@@ -137,7 +137,6 @@ package org.Invader
 			if (FlxG.justPressed(FlxG.MOUSE) && attackTimer <= 0)
 			{
 				shootBullet();
-				FlxG.log(attackTimer.toString());
 				attackTimer = 2;
 			}
 			FlxG.overlapArray(iBullets, _d, killD);
