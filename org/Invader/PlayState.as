@@ -5,6 +5,8 @@ package org.Invader
 	public class PlayState extends FlxState
 	{
 		[Embed(source='../../data/cursor.png')] private var ImgCursor:Class;
+		[Embed(source = '../../data/Laser.mp3')] private var SoundLaser:Class;
+		[Embed(source='../../data/Explosion.mp3')] private var SoundExplosion:Class;
 
 		
 		public var ships:FlxArray;
@@ -38,7 +40,7 @@ package org.Invader
 				iBullets.add(layerBullets.add(new Bullet(0, 0, 0, 0)));
 			}
 						
-			_d = new Defender(240, 580, dBullets);
+			_d = new Defender(240, 580, dBullets, iBullets);
 			layerDefender.add(_d);
 			
 			setShips();
@@ -147,6 +149,7 @@ package org.Invader
 		
 		private function shootBullet():void
 		{
+			FlxG.play(SoundLaser);
 			if (FlxG.score > 0) FlxG.score -= 1;
 			var XVelocity:Number;
 			var YVelocity:Number;
@@ -166,8 +169,7 @@ package org.Invader
 			
 			var bullet:Bullet = new Bullet(ship.x, ship.y, XVelocity, YVelocity);
 			bullet.reset(ship.x, ship.y, XVelocity, YVelocity);
-			iBullets.add(PlayState.layerBullets.add(bullet));
-			
+			iBullets.add(PlayState.layerBullets.add(bullet));			
 		}
 		
 		private function killD(b:FlxSprite, d:Defender):void
@@ -179,6 +181,7 @@ package org.Invader
 
 		private function killI(b:FlxSprite, i:Invader):void
 		{
+			FlxG.play(SoundExplosion);
 			b.kill();
 			i.kill();
 			if (FlxG.score >= 3) FlxG.score -= 3;

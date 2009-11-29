@@ -5,16 +5,21 @@ package org.Invader
 	public class Defender extends FlxSprite
 	{
 		[Embed(source='../../data/ship.png')] private var ImgShip:Class;
+		[Embed(source='../../data/Explosion.mp3')] private var SoundExplosion:Class;
+		[Embed(source = '../../data/Laser.mp3')] private var SoundLaser:Class;	
+		
 		public var moveSpeed:int = 400;
 		public var attackTimer:Number = 0;
 		public var deaths:uint = 0;
 		private var bullets:FlxArray;
+		private var iBullets:FlxArray;
 		
-		public function Defender(X:Number, Y:Number, Bullets:FlxArray):void
+		public function Defender(X:Number, Y:Number, Bullets:FlxArray, Ibullets:FlxArray):void
 		{
 			super(ImgShip, X, Y, false)
 			health = 4;
 			bullets = Bullets;
+			iBullets = Ibullets
 		}
 		override public function update():void
 		{
@@ -22,6 +27,7 @@ package org.Invader
 			{
 				if (deaths < 3)
 				{
+					FlxG.play(SoundExplosion);
 					FlxG.score += 3;
 					dead = false;
 					x = 240;
@@ -67,6 +73,7 @@ package org.Invader
 		
 		private function shootBullet():void
 		{
+			FlxG.play(SoundLaser);
 			var XVelocity:Number = 0;
 			var YVelocity:Number = -200;
 			for (var i:uint = 0; i< bullets.length; ++i)
