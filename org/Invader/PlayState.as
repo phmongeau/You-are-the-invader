@@ -17,6 +17,7 @@ package org.Invader
 		public var attackTimer:Number = 0;
 		public var blocks:FlxArray;
 		private var scoreDisplay:FlxText;
+		private var iNum:uint = 24;
 		
 		public static var layerShips:FlxLayer;
 		public static var layerDefender:FlxLayer;
@@ -108,11 +109,15 @@ package org.Invader
 		override public function update():void
 		{
 			var edge:Boolean = false;
+			var bottomEdge:Boolean = false;
+			
+			FlxG.log(ships.length.toString());
 			
 			scoreDisplay.setText(FlxG.score.toString());
 			
 			for (var i:int = 0; i < ships.length; ++i)
 			{
+				if (ships[i].y >= 640) bottomEdge = true; 
 				if (ships[i].x <= 0 || ships[i].x >= 448)
 				{
 					edge = true;
@@ -143,6 +148,7 @@ package org.Invader
 			FlxG.overlapArrays(dBullets, ships, killI);
 			FlxG.overlapArrays(iBullets, blocks, hitBlock);
 			FlxG.overlapArrays(dBullets, blocks, hitBlock);
+			if (bottomEdge || iNum <= 0) FlxG.switchState(LostState);
 			super.update();
 		}
 		
@@ -183,6 +189,7 @@ package org.Invader
 			FlxG.play(SoundExplosion);
 			b.kill();
 			i.kill();
+			iNum -= 1;
 			if (FlxG.score >= 3) FlxG.score -= 3;
 		}
 		private function hitBlock(bullet:FlxSprite, block:Bunker):void

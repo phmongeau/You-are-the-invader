@@ -8,7 +8,7 @@ package org.Invader
 		[Embed(source='../../data/Explosion.mp3')] private var SoundExplosion:Class;
 		[Embed(source = '../../data/Laser.mp3')] private var SoundLaser:Class;	
 		
-		public var moveSpeed:int = 30;
+		public var moveSpeed:int = 60;
 		public var attackTimer:Number = 0;
 		public var deaths:uint = 0;
 		private var bullets:FlxArray;
@@ -70,8 +70,24 @@ package org.Invader
 			if (change == 10) velocity.x *= -1;
 			else
 			{
-				if (left >= right) velocity.x += moveSpeed * FlxG.elapsed;
-				else if (right >= left) velocity.x -= moveSpeed * FlxG.elapsed;
+				if (left >= right)
+				{
+					if (facing) velocity.x += moveSpeed * FlxG.elapsed;
+					else
+					{
+						facing = true;
+						velocity.x = moveSpeed * FlxG.elapsed;
+					}
+				}
+				else if (right >= left)
+				{
+					if (!facing) velocity.x -= moveSpeed * FlxG.elapsed;
+					else
+					{
+						facing = false;
+						velocity.x = - moveSpeed * FlxG.elapsed;
+					}
+				}
 				else velocity.x *= 0.7;
 			}
 						
