@@ -110,9 +110,7 @@ package org.Invader
 		{
 			var edge:Boolean = false;
 			var bottomEdge:Boolean = false;
-			
-			FlxG.log(ships.length.toString());
-			
+						
 			scoreDisplay.setText(FlxG.score.toString());
 			
 			for (var i:int = 0; i < ships.length; ++i)
