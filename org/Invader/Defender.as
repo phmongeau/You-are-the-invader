@@ -13,13 +13,19 @@ package org.Invader
 		public var deaths:uint = 0;
 		private var bullets:FlxArray;
 		private var iBullets:FlxArray;
+		public var lives:FlxArray;
+		private var curLife:uint = 3;
+		private var shootRand:uint = 1;
+		private var attackLevel:uint = 4;
 		
-		public function Defender(X:Number, Y:Number, Bullets:FlxArray, Ibullets:FlxArray):void
+		public function Defender(X:Number, Y:Number, Bullets:FlxArray, Ibullets:FlxArray, Lives:FlxArray):void
 		{
 			super(ImgShip, X, Y, false);
 			health = 4;
 			bullets = Bullets;
 			iBullets = Ibullets;
+			lives = Lives;
+			
 		}
 		override public function update():void
 		{
@@ -35,6 +41,10 @@ package org.Invader
 					flicker(3);
 					health = 4;
 					deaths += 1;
+					lives[curLife].kill();
+					--curLife;
+					shootRand += 10;
+					attackLevel -= 1;
 				}
 				else
 				{
@@ -55,16 +65,15 @@ package org.Invader
 				}
 			}
 			
-			
 			var change:int = Math.round(Math.random()*50);
-			var shoot:int = Math.round(Math.random()*50);
+			var shoot:int = Math.round(Math.random()*60);
 			
 			attackTimer -= FlxG.elapsed * 3;
 			
-			if (shoot == 10 && attackTimer <= 0)
+			if ((shoot >= 0 && shoot <= shootRand )&& attackTimer <= 0)
 			{
 				shootBullet();
-				attackTimer = 6;
+				attackTimer = attackLevel;
 			}
 			
 			if (change == 10) velocity.x *= -1;

@@ -5,6 +5,7 @@ package org.Invader
 	public class PlayState extends FlxState
 	{
 		[Embed(source='../../data/cursor.png')] private var ImgCursor:Class;
+		[Embed(source='../../data/lives.png')] private var ImgLife:Class;
 		[Embed(source = '../../data/Laser.mp3')] private var SoundLaser:Class;
 		[Embed(source='../../data/Explosion.mp3')] private var SoundExplosion:Class;
 
@@ -17,7 +18,10 @@ package org.Invader
 		public var attackTimer:Number = 0;
 		public var blocks:FlxArray;
 		private var scoreDisplay:FlxText;
-		private var iNum:uint = 24;
+		private var iNum:uint = 29;
+		public var lives:FlxArray = new FlxArray();
+		public var Timer:Number = 0;
+		
 		
 		public static var layerShips:FlxLayer;
 		public static var layerDefender:FlxLayer;
@@ -41,7 +45,7 @@ package org.Invader
 				iBullets.add(layerBullets.add(new Bullet(0, 0, 0, 0)));
 			}
 						
-			_d = new Defender(240, 580, dBullets, iBullets);
+			_d = new Defender(240, 580, dBullets, iBullets, lives);
 			layerDefender.add(_d);
 			
 			setShips();
@@ -50,6 +54,16 @@ package org.Invader
 			//blocks.add(layerBunker.add(new Bunker(240, 480)));
 			
 			setBunker();
+			
+			var tmpH:FlxSprite
+			
+			for (var n:uint = 0; n < 4; ++n)
+			{
+				tmpH = new FlxSprite(ImgLife, 10 + (n * 20), 620, true, false);
+				tmpH.scrollFactor.x = tmpH.scrollFactor.y = 0;
+				lives.add(layerHud.add(tmpH));
+			}
+
 			
 			FlxG.score = 10;
 			scoreDisplay = new FlxText(2, 2, 48, 40, FlxG.score.toString(), 0xFFFFFFFF, null, 16, "left");
@@ -108,6 +122,7 @@ package org.Invader
 		
 		override public function update():void
 		{
+			Timer += Math.round(FlxG.elapsed);
 			var edge:Boolean = false;
 			var bottomEdge:Boolean = false;
 						
@@ -142,10 +157,11 @@ package org.Invader
 				shootBullet();
 				attackTimer = 2;
 			}
+						
 			FlxG.overlapArray(iBullets, _d, killD);
 			FlxG.overlapArrays(dBullets, ships, killI);
-			FlxG.overlapArrays(iBullets, blocks, hitBlock);
-			FlxG.overlapArrays(dBullets, blocks, hitBlock);
+			FlxG.overlapArrays(iBullets, blocks, hitBlockI);
+			FlxG.overlapArrays(dBullets, blocks, hitBlockD);
 			if (bottomEdge || iNum <= 0) FlxG.switchState(LostState);
 			super.update();
 		}
@@ -188,14 +204,22 @@ package org.Invader
 			b.kill();
 			i.kill();
 			iNum -= 1;
+			FlxG.log(iNum.toString());
 			if (FlxG.score >= 3) FlxG.score -= 3;
 		}
-		private function hitBlock(bullet:FlxSprite, block:Bunker):void
+		private function hitBlockI(bullet:FlxSprite, block:Bunker):void
 		{
 			bullet.kill();
 			if (block.state <= 3) block.state += 1;
 			else block.kill();
 			FlxG.score += 1;
 		}
+		private function hitBlockD(bullet:FlxSprite, block:Bunker):void
+		{
+			bullet.kill();
+			if (block.state <= 3) block.state += 1;
+			else block.kill();
+		}
+		
 	}
 }

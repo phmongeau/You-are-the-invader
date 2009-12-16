@@ -15,6 +15,16 @@ package org.Invader
 			this.add(new FlxText(0, FlxG.height - 24, FlxG.width, 8, "Click to restart", 0xFFFFFFFF, null, 8, "center"));
 			
 			FlxG.setCursor(ImgCursor);
+			
+			//Kongregate Stuff
+			if(FlxG.kong)
+			{
+				FlxG.kong.API.stats.submitArray
+				([
+					{name:"Score", value:FlxG.score},
+					{name:"Lost", value:1}
+				]);
+			}			
 
 		}
 		

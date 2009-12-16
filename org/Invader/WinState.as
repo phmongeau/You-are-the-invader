@@ -13,9 +13,18 @@ package org.Invader
 			this.add(new FlxText(0, (FlxG.width/2) - 25, FlxG.width, 80, "Your score is:", 0xFFFFFFFF, null, 16, "center"));
 			this.add(new FlxText(0, (FlxG.width/2) - 5, FlxG.width, 80, FlxG.score.toString(), 0xFFFFFFFF, null, 16, "center"));
 			this.add(new FlxText(0, FlxG.height - 24, FlxG.width, 8, "Click to restart", 0xFFFFFFFF, null, 8, "center"));
-			
+						
 			FlxG.setCursor(ImgCursor);
-
+			
+			//Kongregate Stuff
+			if(FlxG.kong)
+			{
+				FlxG.kong.API.stats.submitArray
+				([
+					{name:"Score", value:FlxG.score},
+					{name:"Win", value:1}
+				]);
+			}
 		}
 		
 		private function onFade():void
@@ -30,7 +39,6 @@ package org.Invader
 				FlxG.flash(0xFFFFFFFF, 0.75);
 				FlxG.fade(0xFF000000, 1, onFade);
 			}
-//			if(!FlxG.kong) (FlxG.kong = parent.addChild(new FlxKong()) as FlxKong).init();
 			super.update();
 		}
 	}
